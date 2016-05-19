@@ -2,6 +2,7 @@
 	<head>
 		<title>COS 344 Final Project</title>
 		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
 		<script type="text/javascript" src="initShaders.js"></script>
 		<script type="text/javascript" src="initBuffers.js"></script>
@@ -118,11 +119,12 @@
 
 			function webGLStart() {
 				var canvas = document.getElementById("webgl-canvas");
-				canvas.width  = canvas.clientWidth;
-				canvas.height = canvas.clientHeight;
+				canvas.width  = $(window).width();
+				canvas.height = $(window).height();
 				initGL(canvas);
 				initShaders();
 				initBuffers();
+				initLighting();
 				initTextures();
 
 				gl.clearColor(0.0, 0.0, 0.0, 1.0);
