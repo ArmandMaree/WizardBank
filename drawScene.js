@@ -1,4 +1,5 @@
 var lightRotate = 0.0;
+var witchAlpha = 1.0;
 var startX = 0.0;
 var startY = 0.0;
 var startZ = -100.0;
@@ -11,12 +12,14 @@ function drawScene() {
 	mat4.identity(mvMatrix);
 	mat4.translate(mvMatrix, [startX, startY, startZ]);
 	gl.uniform1i(shaderProgram.useLightingUniform, true);
-	//mat4.rotate(mvMatrix, Math.PI / 2, [0, 1, 0]);
+	//mat4.rotate(mvMatrix, -Math.PI / 2, [0, 1, 0]);
+	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
 
 	mvPushMatrix();
 
 	// floor
 	mat4.translate(mvMatrix, [0.0, -wallHeight / 2, 0.0]);
+	mat4.rotate(mvMatrix, Math.PI, [1, 0, 0]);
 	gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -125,7 +128,6 @@ function drawScene() {
 
 	// ceiling
 	mat4.translate(mvMatrix, [0.0, wallHeight / 2, 0.0]);
-	mat4.rotate(mvMatrix, Math.PI, [1, 0, 0]);
 	gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -148,7 +150,7 @@ function drawScene() {
 	// right light front
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
 	mat4.translate(mvMatrix, [wallWidth / 3, wallHeight / 2 - 3, wallWidth / 3]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 1, 0]);
+	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -171,7 +173,7 @@ function drawScene() {
 
 	// right light back
 	mat4.translate(mvMatrix, [wallWidth / 3, wallHeight / 2 - 3, -wallWidth / 3]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 1, 0]);
+	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -189,12 +191,15 @@ function drawScene() {
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
 
-	mvPopMatrix();mvPushMatrix();
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
+
+	mvPopMatrix();
+	mvPushMatrix();
 
 	// left light front
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
 	mat4.translate(mvMatrix, [-wallWidth / 3, wallHeight / 2 - 3, wallWidth / 3]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 1, 0]);
+	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -216,8 +221,9 @@ function drawScene() {
 	mvPushMatrix();
 
 	// left light back
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
 	mat4.translate(mvMatrix, [-wallWidth / 3, wallHeight / 2 - 3, -wallWidth / 3]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 1, 0]);
+	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -235,18 +241,54 @@ function drawScene() {
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
 
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
+
 	mvPopMatrix();
+	mvPushMatrix();
+
+	// witch
+	gl.uniform1f(shaderProgram.alphaUniform, witchAlpha);
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
+	mat4.translate(mvMatrix, [0.0, -wallHeight / 2 + npcHeight / 2, -wallWidth / 2 + 2]);
+	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, npcVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexNormalBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, npcVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexTextureCoordBuffer);
+	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, npcVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, witchTexture);
+	gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+	setMatrixUniforms();
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, npcVertexPositionBuffer.numItems);
 
 	gl.uniform1i(shaderProgram.useLightingUniform, true);
+	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
+
+	mvPopMatrix();
 }
 
 var lastTime = 0;
+var witchAlphaUp = false;
 
 function animate() {
 	var currTime = new Date().getTime();
 
 	if (lastTime != 0) {
-		lightRotate = (lightRotate + ((currTime - lastTime) / 300) * Math.PI) % (Math.PI * 2);
+		lightRotate = (lightRotate + ((currTime - lastTime) / 400) * Math.PI) % (Math.PI * 2);
+		if (witchAlphaUp)
+			witchAlpha = Math.min(witchAlpha + ((currTime - lastTime) / 10000), 1.0);
+		else
+			witchAlpha = Math.max(witchAlpha - ((currTime - lastTime) / 10000), 0.85);
+
+		if (witchAlpha == 1.0)
+			witchAlphaUp = false;
+		else if (witchAlpha == 0.85)
+			witchAlphaUp = true;
 	}
 
 	lastTime = currTime;

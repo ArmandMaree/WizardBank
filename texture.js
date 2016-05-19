@@ -2,9 +2,9 @@ var floorTexture;
 var wallTexture;
 var ceilingTexture;
 var lightTexture;
+var witchTexture;
 
 function initTextures() {
-	// floor
 	floorTexture = gl.createTexture();
 	floorTexture.image = new Image();
 	floorTexture.image.crossOrigin = "anonymous";
@@ -28,6 +28,12 @@ function initTextures() {
 	lightTexture.image.crossOrigin = "anonymous";
 	lightTexture.image.onload = function() { handleLoadedTexture(lightTexture); }
 	lightTexture.image.src = "images/light.png";
+
+	witchTexture = gl.createTexture();
+	witchTexture.image = new Image();
+	witchTexture.image.crossOrigin = "anonymous";
+	witchTexture.image.onload = function() { handleLoadedTexture(witchTexture); }
+	witchTexture.image.src = "images/witch.png";
 }
 
 function handleLoadedTexture(texture) {

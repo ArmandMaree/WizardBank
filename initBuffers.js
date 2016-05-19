@@ -1,5 +1,7 @@
 var wallWidth = 100.0;
 var wallHeight = 30.0;
+var npcWidth = 8.0;
+var npcHeight = 20;
 
 var floorVertexPositionBuffer;
 var floorVertexNormalBuffer;
@@ -12,6 +14,10 @@ var wallVertexTextureCoordBuffer;
 var lightVertexPositionBuffer;
 var lightVertexNormalBuffer;
 var lightVertexTextureCoordBuffer;
+
+var npcVertexPositionBuffer;
+var npcVertexNormalBuffer;
+var npcVertexTextureCoordBuffer;
 
 function initBuffers() {
 	// floor
@@ -217,4 +223,45 @@ function initBuffers() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	lightVertexTextureCoordBuffer.itemSize = 2;
 	lightVertexTextureCoordBuffer.numItems = 24;
+
+	// npc
+	npcVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexPositionBuffer);
+	var vertices = [
+		-npcWidth / 2, -10, 0.0,
+		-npcWidth / 2,  10, 0.0,
+		 npcWidth / 2, -10, 0.0,
+		 npcWidth / 2,  10, 0.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	npcVertexPositionBuffer.itemSize = 3;
+	npcVertexPositionBuffer.numItems = 4;
+
+	npcVertexNormalBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexNormalBuffer);
+	var vertexNormals = [
+		-npcWidth / 2, -npcHeight / 2, wallWidth,
+		-npcWidth / 2,  npcHeight / 2, wallWidth,
+		 npcWidth / 2, -npcHeight / 2, wallWidth,
+		 npcWidth / 2,  npcHeight / 2, wallWidth
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+	npcVertexNormalBuffer.itemSize = 3;
+	npcVertexNormalBuffer.numItems = 4;
+
+	npcVertexTextureCoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexTextureCoordBuffer);
+	var textureCoords = [
+		0.0, 0.0,
+		0.0, 1.0,
+		1.0, 0.0,
+		1.0, 1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+	npcVertexTextureCoordBuffer.itemSize = 2;
+	npcVertexTextureCoordBuffer.numItems = 4;
+}
+
+function recalcBuffers() {
+
 }

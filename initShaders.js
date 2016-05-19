@@ -66,4 +66,5 @@ function initShaders() {
 	shaderProgram.pointLighting0ColorUniform = gl.getUniformLocation(shaderProgram, "uPointLighting0Color");
 	shaderProgram.pointLighting1LocationUniform = gl.getUniformLocation(shaderProgram, "uPointLighting1Location");
 	shaderProgram.pointLighting1ColorUniform = gl.getUniformLocation(shaderProgram, "uPointLighting1Color");
+	shaderProgram.alphaUniform = gl.getUniformLocation(shaderProgram, "uAlpha");
 }
