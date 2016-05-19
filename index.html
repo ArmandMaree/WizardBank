@@ -11,30 +11,30 @@
 		<script type="text/javascript" src="matrixCalculations.js"></script>
 
 		<script id="shader-fs" type="x-shader/x-fragment">
-		    precision mediump float;
+			precision mediump float;
 
-		    varying vec2 vTextureCoord;
-		    varying vec3 vLightWeighting;
+			varying vec2 vTextureCoord;
+			varying vec3 vLightWeighting;
 
-		    uniform sampler2D uSampler;
+			uniform sampler2D uSampler;
 
-		    void main(void) {
-		        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-		        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
-		    }
+			void main(void) {
+				vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+				gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+			}
 		</script>
 		<script id="shader-vs" type="x-shader/x-vertex">
-		    attribute vec3 aVertexPosition;
-		    attribute vec3 aVertexNormal;
-		    attribute vec2 aTextureCoord;
+			attribute vec3 aVertexPosition;
+			attribute vec3 aVertexNormal;
+			attribute vec2 aTextureCoord;
 
-		    uniform mat4 uMVMatrix;
-		    uniform mat4 uPMatrix;
-		    uniform mat3 uNMatrix;
+			uniform mat4 uMVMatrix;
+			uniform mat4 uPMatrix;
+			uniform mat3 uNMatrix;
 
-		    uniform bool uUseLighting;
+			uniform bool uUseLighting;
 
-		    uniform vec3 uAmbientColor;
+			uniform vec3 uAmbientColor;
 			varying vec3 vAmbientColor;
 
 			uniform vec3 uPointLighting0Color;
@@ -44,13 +44,13 @@
 			uniform vec3 uPointLighting1Location;
 			varying vec3 vPoint1Color;
 
-		    varying vec2 vTextureCoord;
-		    varying vec3 vLightWeighting;
+			varying vec2 vTextureCoord;
+			varying vec3 vLightWeighting;
 
-		    void main(void) {
+			void main(void) {
 				vec4 mvPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
-		        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-		        vTextureCoord = aTextureCoord;
+				gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+				vTextureCoord = aTextureCoord;
 				vec3 ambientColor;
 
 				vAmbientColor = uAmbientColor;
@@ -58,8 +58,8 @@
 				vPoint1Color = uPointLighting1Color;
 
 				if (!uUseLighting) {
-		            vLightWeighting = vec3(1.0, 1.0, 1.0);
-		        } else {
+					vLightWeighting = vec3(1.0, 1.0, 1.0);
+				} else {
 					vec3 transformedNormal = uNMatrix * aVertexNormal;
 
 					vec3 light0Direction = normalize(uPointLighting0Location - mvPosition.xyz);
@@ -67,29 +67,29 @@
 					vec3 light1Direction = normalize(uPointLighting1Location - mvPosition.xyz);
 					float pointLight1Weighting = max(dot(transformedNormal, light1Direction), 0.0);
 
-	            	vLightWeighting = vAmbientColor + vPoint0Color * pointLight0Weighting + vPoint1Color * pointLight1Weighting;
+					vLightWeighting = vAmbientColor + vPoint0Color * pointLight0Weighting + vPoint1Color * pointLight1Weighting;
 				}
-		    }
+			}
 		</script>
 
 		<script type="text/javascript">
-		    var gl;
+			var gl;
 
-		    function initGL(canvas) {
-		        try {
-		            gl = canvas.getContext("experimental-webgl");
-		            gl.viewportWidth = canvas.width;
-		            gl.viewportHeight = canvas.height;
-		        } catch (e) {
-		        }
+			function initGL(canvas) {
+				try {
+					gl = canvas.getContext("experimental-webgl");
+					gl.viewportWidth = canvas.width;
+					gl.viewportHeight = canvas.height;
+				} catch (e) {
+				}
 
-		        if (!gl)
-		            alert("Could not initialise WebGL, sorry :-(");
-		    }
+				if (!gl)
+					alert("Could not initialise WebGL, sorry :-(");
+			}
 
-		    var shaderProgram;
-		    var mvMatrix = mat4.create();
-		    var pMatrix = mat4.create();
+			var shaderProgram;
+			var mvMatrix = mat4.create();
+			var pMatrix = mat4.create();
 			var mvMatrixStack = [];
 			var normalMatrix = mat3.create();
 
@@ -106,33 +106,33 @@
 				mvMatrix = mvMatrixStack.pop();
 			}
 
-		    function setMatrixUniforms() {
-		        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-		        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+			function setMatrixUniforms() {
+				gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+				gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 
 				var normalMatrix = mat3.create();
-		        mat4.toInverseMat3(mvMatrix, normalMatrix);
-		        mat3.transpose(normalMatrix);
-		        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
-		    }
+				mat4.toInverseMat3(mvMatrix, normalMatrix);
+				mat3.transpose(normalMatrix);
+				gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+			}
 
-		    function webGLStart() {
-		        var canvas = document.getElementById("webgl-canvas");
+			function webGLStart() {
+				var canvas = document.getElementById("webgl-canvas");
 				canvas.width  = canvas.clientWidth;
-  				canvas.height = canvas.clientHeight;
-		        initGL(canvas);
-		        initShaders();
-		        initBuffers();
-    			initTextures();
+				canvas.height = canvas.clientHeight;
+				initGL(canvas);
+				initShaders();
+				initBuffers();
+				initTextures();
 
-		        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-		        gl.enable(gl.DEPTH_TEST);
+				gl.clearColor(0.0, 0.0, 0.0, 1.0);
+				gl.enable(gl.DEPTH_TEST);
 
 				tick();
-		    }
+			}
 		</script>
 	</head>
 	<body onload="webGLStart();" style="margin: 0; padding: 0; height: 100%;">
-	    <canvas id="webgl-canvas" style="border: none; width: 100%; height: 100%; display: block;"></canvas>
+		<canvas id="webgl-canvas" style="border: none; width: 100%; height: 100%; display: block;"></canvas>
 	</body>
 </html>
