@@ -1,5 +1,5 @@
 var wallWidth = 100.0;
-var wallHeight = 30.0;
+var wallHeight = 50.0;
 var npcWidth = 8.0;
 var npcHeight = 20;
 

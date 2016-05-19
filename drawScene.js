@@ -149,7 +149,7 @@ function drawScene() {
 
 	// right light front
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
-	mat4.translate(mvMatrix, [wallWidth / 3, wallHeight / 2 - 3, wallWidth / 3]);
+	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4]);
 	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
@@ -172,7 +172,7 @@ function drawScene() {
 	mvPushMatrix();
 
 	// right light back
-	mat4.translate(mvMatrix, [wallWidth / 3, wallHeight / 2 - 3, -wallWidth / 3]);
+	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4]);
 	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
@@ -198,7 +198,7 @@ function drawScene() {
 
 	// left light front
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
-	mat4.translate(mvMatrix, [-wallWidth / 3, wallHeight / 2 - 3, wallWidth / 3]);
+	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4]);
 	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
@@ -222,7 +222,7 @@ function drawScene() {
 
 	// left light back
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
-	mat4.translate(mvMatrix, [-wallWidth / 3, wallHeight / 2 - 3, -wallWidth / 3]);
+	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4]);
 	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
