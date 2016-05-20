@@ -11,6 +11,9 @@ function drawScene() {
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 500.0, pMatrix);
 	mat4.identity(mvMatrix);
 	mat4.translate(mvMatrix, [startX, startY, startZ]);
+	mat4.translate(mvMatrix, [xMovement, yMovement, zMovement]);
+	mat4.rotate(mvMatrix, yRotate, [0, 1, 0]);
+	mat4.rotate(mvMatrix, zRotate, [0, 0, 1]);
 	gl.uniform1i(shaderProgram.useLightingUniform, true);
 	//mat4.rotate(mvMatrix, -Math.PI / 2, [0, 1, 0]);
 	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
