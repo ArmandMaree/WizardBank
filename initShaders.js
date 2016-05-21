@@ -50,6 +50,8 @@ function initShaders() {
 
 	shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
 	gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+	shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+	gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
 	shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
 	gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
 	shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
@@ -61,9 +63,10 @@ function initShaders() {
 
 	shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
 	shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
-	shaderProgram.usePointUniform = gl.getUniformLocation(shaderProgram, "uUsePoint");
 	shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
 	shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uPointLightingLocation");
     shaderProgram.pointLightingColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingColor");
+	shaderProgram.usePointUniform = gl.getUniformLocation(shaderProgram, "uUsePoint");
 	shaderProgram.alphaUniform = gl.getUniformLocation(shaderProgram, "uAlpha");
+	shaderProgram.useColorUniform = gl.getUniformLocation(shaderProgram, "uUseColor");
 }

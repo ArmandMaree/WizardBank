@@ -4,14 +4,27 @@ var zMovement = 0.0;
 var xRotate = 0.0;
 var yRotate = 0.0;
 var zRotate = 0.0;
-var useGreen = true;
+var useGreen = false;
 
 $(document).on("keydown", function (e) {
-	if (e.which == 188 || e.which == 190 ||e.which == 38 || e.which == 40 || e.which == 87 || e.which == 65 || e.which == 83 || e.which == 68 || e.which == 222 || e.which == 191 || e.which == 86 || e.which == 80 || e.which == 67) {
-		e.preventDefault();
+	switch (e.which) {
+		case 188:
+		case 190:
+		case 38:
+		case 40:
+		case 87:
+		case 65:
+		case 83:
+		case 68:
+		case 222:
+		case 191:
+		case 86:
+		case 80:
+		case 67:
+			break;
+		default:
+			console.log(e.which);
 	}
-	else
-		console.log(e.which);
 
 	if (e.which == 40) {
 		yMovement += 2;

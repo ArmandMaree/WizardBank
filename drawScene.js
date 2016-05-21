@@ -2,7 +2,7 @@ var lightSize = 0.0;
 var witchAlpha = 1.0;
 var startX = 0.0;
 var startY = 0.0;
-var startZ = 0.0;
+var startZ = -80;
 var catRadius = wallWidth / 3;
 var catX = catRadius;
 var catZ = 0.0;
@@ -21,29 +21,30 @@ function drawScene() {
 		mat4.ortho(-2.0, 2.0, -2.0, 2.0, 0.1, 100, pMatrix);
 
 	mat4.identity(mvMatrix);
-	mat4.translate(mvMatrix, [startX, startY, startZ]);
-	mat4.translate(mvMatrix, [xMovement, yMovement, zMovement]);
+	mvMatrix = translateAll(mvMatrix, xMovement + startX, yMovement + startY, zMovement + startZ);
 
 	if (xRotate != 0)
-		mat4.rotate(pMatrix, xRotate, [1, 0, 0]);
+		pMatrix = rotateX(pMatrix, xRotate);
 
 	if (yRotate != 0)
-		mat4.rotate(pMatrix, yRotate, [0, 1, 0]);
-	
+		pMatrix = rotateY(pMatrix, yRotate);
+
 	if (zRotate != 0)
-		mat4.rotate(pMatrix, zRotate, [0, 0, 1]);
-	
+		pMatrix = rotateZ(pMatrix, zRotate);
+
 	gl.uniform1i(shaderProgram.useLightingUniform, true);
+	gl.uniform1i(shaderProgram.useParticleUniform, false);
+	gl.uniform1i(shaderProgram.useColorUniform, false);
 	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
+	gl.disableVertexAttribArray(shaderProgram.vertexColorAttribute);
 
 	mvPushMatrix();
 
 	// floor
-	mat4.translate(mvMatrix, [0.0, -wallHeight / 2, 0.0]);
-	mat4.rotate(mvMatrix, Math.PI, [1, 0, 0]);
+	mvMatrix = translateAll(mvMatrix, 0.0, -wallHeight / 2, 0.0);
+	mvMatrix = rotateX(mvMatrix, Math.PI);
 	gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
 	gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexNormalBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, floorVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -61,8 +62,8 @@ function drawScene() {
 	mvPushMatrix();
 
 	// back wall
-	mat4.translate(mvMatrix, [0.0, 0.0, -wallWidth / 2]);
-	mat4.rotate(mvMatrix, Math.PI, [0, 1, 0]);
+	mvMatrix = translateAll(mvMatrix, 0.0, 0.0, -wallWidth / 2);
+	mvMatrix = rotateY(mvMatrix, Math.PI);
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, wallVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -81,31 +82,31 @@ function drawScene() {
 
 	mvPopMatrix();
 	mvPushMatrix();
-	
+
 	// front wall
-	mat4.translate(mvMatrix, [0.0, 0.0, wallWidth / 2]);
+	mvMatrix = translateAll(mvMatrix, 0.0, 0.0, wallWidth / 2);
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, wallVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	
+
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexNormalBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, wallVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	
+
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexTextureCoordBuffer);
 	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, wallVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	
+
 	gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_2D, wallTexture);
 	gl.uniform1i(shaderProgram.samplerUniform, 0);
-	
+
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, wallVertexPositionBuffer.numItems);
-	
+
 	mvPopMatrix();
 	mvPushMatrix();
 
 	// left wall
-	mat4.translate(mvMatrix, [-wallWidth / 2, 0.0, 0.0]);
-	mat4.rotate(mvMatrix, Math.PI / 2 * 3, [0, 1, 0]);
+	mvMatrix = translateAll(mvMatrix, -wallWidth / 2, 0.0, 0.0);
+	mvMatrix = rotateY(mvMatrix, Math.PI / 2 * 3);
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, wallVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -126,8 +127,8 @@ function drawScene() {
 	mvPushMatrix();
 
 	// right wall
-	mat4.translate(mvMatrix, [wallWidth / 2, 0.0, 0.0]);
-	mat4.rotate(mvMatrix, Math.PI / 2, [0, 1, 0]);
+	mvMatrix = translateAll(mvMatrix, wallWidth / 2, 0.0, 0.0);
+	mvMatrix = rotateY(mvMatrix, Math.PI / 2);
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, wallVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -148,7 +149,7 @@ function drawScene() {
 	mvPushMatrix();
 
 	// ceiling
-	mat4.translate(mvMatrix, [0.0, wallHeight / 2, 0.0]);
+	mvMatrix = translateAll(mvMatrix, 0.0, wallHeight / 2, 0.0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -169,8 +170,9 @@ function drawScene() {
 	mvPushMatrix();
 
 	// right light front
-	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4]);
-	scaleAll(lightSize, lightSize, lightSize);
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
+	mvMatrix = translateAll(mvMatrix, wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4);
+	mvMatrix = scaleAll(mvMatrix, lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -187,13 +189,15 @@ function drawScene() {
 
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
 
 	mvPopMatrix();
 	mvPushMatrix();
 
 	// right light back
-	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4]);
-	scaleAll(lightSize, lightSize, lightSize);
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
+	mvMatrix = translateAll(mvMatrix, wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4);
+	mvMatrix = scaleAll(mvMatrix, lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -210,13 +214,15 @@ function drawScene() {
 
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
 
 	mvPopMatrix();
 	mvPushMatrix();
 
 	// left light front
-	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4]);
-	scaleAll(lightSize, lightSize, lightSize);
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
+	mvMatrix = translateAll(mvMatrix, -wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4);
+	mvMatrix = scaleAll(mvMatrix, lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -233,13 +239,15 @@ function drawScene() {
 
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
 
 	mvPopMatrix();
 	mvPushMatrix();
 
 	// left light back
-	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4]);
-	scaleAll(lightSize, lightSize, lightSize);
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
+	mvMatrix = translateAll(mvMatrix, -wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4);
+	mvMatrix = scaleAll(mvMatrix, lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -256,13 +264,14 @@ function drawScene() {
 
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
 
 	mvPopMatrix();
 	mvPushMatrix();
 
 	// witch
 	gl.uniform1f(shaderProgram.alphaUniform, witchAlpha);
-	mat4.translate(mvMatrix, [0.0, -wallHeight / 2 + npcHeight / 2, -wallWidth / 2 + 2]);
+	mvMatrix = translateAll(mvMatrix, 0.0, -wallHeight / 2 + npcHeight / 2, -wallWidth / 2 + 2);
 	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, npcVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -285,8 +294,8 @@ function drawScene() {
 	mvPushMatrix();
 
 	// cat
-	mat4.translate(mvMatrix, [catX, -wallHeight / 2 + catHeight / 2, catZ]);
-	mat4.rotate(mvMatrix, catRotate, [0, 1, 0]);
+	mvMatrix = translateAll(mvMatrix, catX, -wallHeight / 2 + catHeight / 2, catZ);
+	mvMatrix = rotateY(mvMatrix, catRotate);
 	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, catVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -310,8 +319,8 @@ function drawScene() {
 	mvPushMatrix();
 
 	// painting left
-	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 8, -wallWidth / 2 + 0.1]);
-	shearX(-Math.PI / 2.5);
+	mvMatrix = translateAll(mvMatrix, -wallWidth / 4, wallHeight / 8, -wallWidth / 2 + 0.1);
+	mvMatrix = shearX(mvMatrix, -Math.PI / 2.5);
 	gl.bindBuffer(gl.ARRAY_BUFFER, paintingVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, paintingVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -335,8 +344,8 @@ function drawScene() {
 	mvPushMatrix();
 
 	// painting right
-	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 8, -wallWidth / 2 + 0.1]);
-	shearX(Math.PI / 2.5);
+	mvMatrix = translateAll(mvMatrix, wallWidth / 4, wallHeight / 8, -wallWidth / 2 + 0.1);
+	mvMatrix = shearX(mvMatrix, Math.PI / 2.5);
 	gl.bindBuffer(gl.ARRAY_BUFFER, paintingVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, paintingVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -359,9 +368,9 @@ function drawScene() {
 	mvPopMatrix();
 	mvPushMatrix();
 
-	// color box
-	mat4.translate(mvMatrix, [0.0, -wallHeight / 2 + 2, 0.0]);
-	scaleAll(3.0, 3.0, 3.0)
+	// color box left
+	mvMatrix = translateAll(mvMatrix, -wallWidth / 4, -wallHeight / 2 + 3, 0.0);
+	mvMatrix = scaleAll(mvMatrix, 3.0, 3.0, 3.0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -377,12 +386,45 @@ function drawScene() {
 		gl.bindTexture(gl.TEXTURE_2D, greenTexture);
 	else
 		gl.bindTexture(gl.TEXTURE_2D, pinkTexture);
-	
+
 	gl.uniform1i(shaderProgram.samplerUniform, 0);
 
 	setMatrixUniforms();
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
 
+	mvMatrix = translateAll(mvMatrix, 0.0, -1, 0.0);
+	mvMatrix = scaleAll(mvMatrix, 1/3, 1/3, 1/3);
+	drawParticles();
+	mvPopMatrix();
+	mvPushMatrix();
+
+	// color box right
+	mvMatrix = translateAll(mvMatrix, wallWidth / 4, -wallHeight / 2 + 3, 0.0);
+	mvMatrix = scaleAll(mvMatrix, 3.0, 3.0, 3.0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexNormalBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, lightVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexTextureCoordBuffer);
+	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, lightVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.activeTexture(gl.TEXTURE0);
+
+	if (useGreen)
+		gl.bindTexture(gl.TEXTURE_2D, greenTexture);
+	else
+		gl.bindTexture(gl.TEXTURE_2D, pinkTexture);
+
+	gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+	setMatrixUniforms();
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, lightVertexPositionBuffer.numItems);
+
+	mat4.translate(mvMatrix, [0.0, -1, 0.0]);
+	mvMatrix = scaleAll(mvMatrix, 1/3, 1/3, 1/3);
+	drawParticles();
 	mvPopMatrix();
 }
 
@@ -417,11 +459,11 @@ function animate() {
 			witchAlphaUp = true;
 
 		if (catGoingLeft) {
-			catX = Math.max(catX - ((currTime - lastTime) / 100), -catRadius);
+			catX = Math.max(catX - ((currTime - lastTime) / 50), -catRadius);
 			catZ = Math.max(Math.sqrt(catRadiusSqr - Math.pow(catX, 2)), -catRadius);
 		}
 		else {
-			catX = Math.min(catX + ((currTime - lastTime) / 100), catRadius);
+			catX = Math.min(catX + ((currTime - lastTime) / 50), catRadius);
 			catZ = Math.min(-Math.sqrt(catRadiusSqr - Math.pow(catX, 2)), catRadius);
 		}
 

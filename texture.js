@@ -69,6 +69,12 @@ function initTextures() {
 	pinkTexture.image.crossOrigin = "anonymous";
 	pinkTexture.image.onload = function() { handleLoadedTexture(pinkTexture); }
 	pinkTexture.image.src = "images/pink.png";
+
+	particleTexture = gl.createTexture();
+	particleTexture.image = new Image();
+	particleTexture.image.crossOrigin = "anonymous";
+	particleTexture.image.onload = function() { handleLoadedTexture(particleTexture); }
+	particleTexture.image.src = "images/rectangle.png";
 }
 
 function handleLoadedTexture(texture) {

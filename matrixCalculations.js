@@ -24,7 +24,11 @@ function matMult(A, B) {
 	return tmp;
 }
 
-function rotateX(angle) {
+function rotate(matrix, x, y, z) {
+	return rotateX(rotateY(rotateZ(matrix, z), y), x);
+}
+
+function rotateX(matrix, angle) {
 	var R = new Float32Array([
 		 1,                0,                0,  0,
 		 0,  Math.cos(angle),  Math.sin(angle),  0,
@@ -32,10 +36,10 @@ function rotateX(angle) {
 		 0,                0,                0,  1
 	]);
 
-	mvMatrix = matMult(R, mvMatrix);
+	return matMult(R, matrix);
 }
 
-function rotateY(angle) {
+function rotateY(matrix, angle) {
 	var R = new Float32Array([
 		 Math.cos(angle),  0, -Math.sin(angle),  0,
 		               0,  1,                0,  0,
@@ -43,10 +47,10 @@ function rotateY(angle) {
 		               0,  0,                0,  1
 	]);
 
-	mvMatrix = matMult(R, mvMatrix);
+	return matMult(R, matrix);
 }
 
-function rotateZ(angle) {
+function rotateZ(matrix, angle) {
 	var R = new Float32Array([
 		 Math.cos(angle),  Math.sin(angle),  0,  0,
 		-Math.sin(angle),  Math.cos(angle),  0,  0,
@@ -54,10 +58,10 @@ function rotateZ(angle) {
 		               0,                0,  0,  1
 	]);
 
-	mvMatrix = matMult(R, mvMatrix);
+	return matMult(R, matrix);
 }
 
-function translateAll(x, y, z) {
+function translateAll(matrix, x, y, z) {
 	var T = new Float32Array([
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -65,10 +69,10 @@ function translateAll(x, y, z) {
 		x, y, z, 1
 	]);
 
-	mvMatrix = matMult(T, mvMatrix);
+	return matMult(T, matrix);
 }
 
-function scaleAll(x, y, z) {
+function scaleAll(matrix, x, y, z) {
 	var S = new Float32Array([
 		x, 0, 0, 0,
 		0, y, 0, 0,
@@ -76,10 +80,10 @@ function scaleAll(x, y, z) {
 		0, 0, 0, 1
 	]);
 
-	mvMatrix = matMult(S, mvMatrix);
+	return matMult(S, matrix);
 }
 
-function shearX(angle) {
+function shearX(matrix, angle) {
 	var S = new Float32Array([
 		                  1, 0, 0, 0,
 		1 / Math.tan(angle), 1, 0, 0,
@@ -87,10 +91,10 @@ function shearX(angle) {
 		                  0, 0, 0, 1
 	]);
 
-	mvMatrix = matMult(S, mvMatrix);
+	return matMult(S, matrix);
 }
 
-function shearY(angle) {
+function shearY(matrix, angle) {
 	var S = new Float32Array([
 		1, 1 / Math.tan(angle), 0, 0,
 		0,               1, 0, 0,
@@ -98,10 +102,10 @@ function shearY(angle) {
 		0,               0, 0, 1
 	]);
 
-	mvMatrix = matMult(S, mvMatrix);
+	return matMult(S, matrix);
 }
 
-function shearZ(angle) {
+function shearZ(matrix, angle) {
 	var S = new Float32Array([
 		1, 0, 1 / Math.tan(angle), 0,
 		0, 1,                   0, 0,
@@ -109,5 +113,5 @@ function shearZ(angle) {
 		0, 0,                   0, 1
 	]);
 
-	mvMatrix = matMult(S, mvMatrix);
+	return matMult(S, matrix);
 }

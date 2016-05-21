@@ -26,9 +26,10 @@ var catVertexPositionBuffer;
 var catVertexNormalBuffer;
 var catVertexTextureCoordBuffer;
 
-var paintingVertexPositionBuffer;
-var paintingVertexNormalBuffer;
-var paintingVertexTextureCoordBuffer;
+var particleVertexPositionBuffer;
+var particleVertexNormalBuffer;
+var particleVertexTextureCoordBuffer;
+var particleVertexColorBuffer;
 
 function initBuffers() {
 	// floor
@@ -345,6 +346,11 @@ function initBuffers() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	paintingVertexTextureCoordBuffer.itemSize = 2;
 	paintingVertexTextureCoordBuffer.numItems = 4;
+
+	particleVertexPositionBuffer = gl.createBuffer();
+	particleVertexNormalBuffer = gl.createBuffer();
+	particleVertexTextureCoordBuffer = gl.createBuffer();
+	particleVertexColorBuffer = gl.createBuffer();
 }
 
 function recalcBuffers() {
