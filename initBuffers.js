@@ -1,7 +1,9 @@
-var wallWidth = 100.0;
+var wallWidth = 200.0;
 var wallHeight = 50.0;
 var npcWidth = 8.0;
 var npcHeight = 20;
+var catWidth = 12.0;
+var catHeight = 8.0;
 
 var floorVertexPositionBuffer;
 var floorVertexNormalBuffer;
@@ -18,6 +20,10 @@ var lightVertexTextureCoordBuffer;
 var npcVertexPositionBuffer;
 var npcVertexNormalBuffer;
 var npcVertexTextureCoordBuffer;
+
+var catVertexPositionBuffer;
+var catVertexNormalBuffer;
+var catVertexTextureCoordBuffer;
 
 function initBuffers() {
 	// floor
@@ -260,6 +266,43 @@ function initBuffers() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	npcVertexTextureCoordBuffer.itemSize = 2;
 	npcVertexTextureCoordBuffer.numItems = 4;
+
+	// cat
+	catVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexPositionBuffer);
+	var vertices = [
+		-catWidth / 2, -catHeight / 2, 0.0,
+		-catWidth / 2,  catHeight / 2, 0.0,
+		 catWidth / 2, -catHeight / 2, 0.0,
+		 catWidth / 2,  catHeight / 2, 0.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	catVertexPositionBuffer.itemSize = 3;
+	catVertexPositionBuffer.numItems = 4;
+
+	catVertexNormalBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexNormalBuffer);
+	var vertexNormals = [
+		-catWidth / 2, -catHeight / 2, wallWidth,
+		-catWidth / 2,  catHeight / 2, wallWidth,
+		 catWidth / 2, -catHeight / 2, wallWidth,
+		 catWidth / 2,  catHeight / 2, wallWidth
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+	catVertexNormalBuffer.itemSize = 3;
+	catVertexNormalBuffer.numItems = 4;
+
+	catVertexTextureCoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexTextureCoordBuffer);
+	var textureCoords = [
+		0.0, 0.0,
+		0.0, 1.0,
+		1.0, 0.0,
+		1.0, 1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+	catVertexTextureCoordBuffer.itemSize = 2;
+	catVertexTextureCoordBuffer.numItems = 4;
 }
 
 function recalcBuffers() {

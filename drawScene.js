@@ -1,8 +1,12 @@
-var lightRotate = 0.0;
+var lightSize = 0.0;
 var witchAlpha = 1.0;
 var startX = 0.0;
 var startY = 0.0;
 var startZ = -100.0;
+var catRadius = wallWidth / 3;
+var catX = catRadius;
+var catZ = 0.0;
+var catRotate = 0.0;
 
 function drawScene() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -12,10 +16,17 @@ function drawScene() {
 	mat4.identity(mvMatrix);
 	mat4.translate(mvMatrix, [startX, startY, startZ]);
 	mat4.translate(mvMatrix, [xMovement, yMovement, zMovement]);
-	mat4.rotate(mvMatrix, yRotate, [0, 1, 0]);
-	mat4.rotate(mvMatrix, zRotate, [0, 0, 1]);
+
+	if (xRotate != 0)
+		mat4.rotate(pMatrix, xRotate, [1, 0, 0]);
+
+	if (yRotate != 0)
+		mat4.rotate(pMatrix, yRotate, [0, 1, 0]);
+	
+	if (zRotate != 0)
+		mat4.rotate(pMatrix, zRotate, [0, 0, 1]);
+	
 	gl.uniform1i(shaderProgram.useLightingUniform, true);
-	//mat4.rotate(mvMatrix, -Math.PI / 2, [0, 1, 0]);
 	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
 
 	mvPushMatrix();
@@ -153,7 +164,7 @@ function drawScene() {
 	// right light front
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
 	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
+	scaleAll(lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -176,7 +187,7 @@ function drawScene() {
 
 	// right light back
 	mat4.translate(mvMatrix, [wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
+	scaleAll(lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -202,7 +213,7 @@ function drawScene() {
 	// left light front
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
 	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 2 - 3, wallWidth / 4]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
+	scaleAll(lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -226,7 +237,7 @@ function drawScene() {
 	// left light back
 	gl.uniform1i(shaderProgram.useLightingUniform, false);
 	mat4.translate(mvMatrix, [-wallWidth / 4, wallHeight / 2 - 3, -wallWidth / 4]);
-	mat4.rotate(mvMatrix, lightRotate, [1, 0.5, 0.25]);
+	scaleAll(lightSize, lightSize, lightSize);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexPositionBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lightVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -273,16 +284,54 @@ function drawScene() {
 	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
 
 	mvPopMatrix();
+	mvPushMatrix();
+
+	// cat
+	gl.uniform1i(shaderProgram.useLightingUniform, false);
+	mat4.translate(mvMatrix, [catX, -wallHeight / 2 + catHeight / 2, catZ]);
+	mat4.rotate(mvMatrix, catRotate, [0, 1, 0]);
+	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, catVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexNormalBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, catVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexTextureCoordBuffer);
+	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, catVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, catTexture);
+	gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+	setMatrixUniforms();
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, npcVertexPositionBuffer.numItems);
+
+	gl.uniform1i(shaderProgram.useLightingUniform, true);
+	gl.uniform1f(shaderProgram.alphaUniform, 1.0);
+
+	mvPopMatrix();
 }
 
+var lightSizeUp = true;
 var lastTime = 0;
 var witchAlphaUp = false;
+var catGoingLeft = true;
+var catRadiusSqr = Math.pow(catRadius, 2);
 
 function animate() {
 	var currTime = new Date().getTime();
 
 	if (lastTime != 0) {
-		lightRotate = (lightRotate + ((currTime - lastTime) / 400) * Math.PI) % (Math.PI * 2);
+		if (lightSizeUp)
+			lightSize = Math.min(lightSize + ((currTime - lastTime) / 1000), 2.0);
+		else
+			lightSize = Math.max(lightSize - ((currTime - lastTime) / 1000), 0.5);
+
+		if (lightSize == 2.0)
+			lightSizeUp = false;
+		else if (lightSize == 0.5)
+			lightSizeUp = true;
+
 		if (witchAlphaUp)
 			witchAlpha = Math.min(witchAlpha + ((currTime - lastTime) / 10000), 1.0);
 		else
@@ -292,6 +341,25 @@ function animate() {
 			witchAlphaUp = false;
 		else if (witchAlpha == 0.85)
 			witchAlphaUp = true;
+
+		if (catGoingLeft) {
+			catX = Math.max(catX - ((currTime - lastTime) / 100), -catRadius);
+			catZ = Math.max(Math.sqrt(catRadiusSqr - Math.pow(catX, 2)), -catRadius);
+		}
+		else {
+			catX = Math.min(catX + ((currTime - lastTime) / 100), catRadius);
+			catZ = Math.min(-Math.sqrt(catRadiusSqr - Math.pow(catX, 2)), catRadius);
+		}
+
+		if (catX == catRadius)
+			catGoingLeft = true;
+		else if (catX == -catRadius)
+			catGoingLeft = false;
+
+		catRotate = Math.atan(catX / catZ);
+
+		if (!catGoingLeft)
+			catRotate = Math.PI + catRotate;
 	}
 
 	lastTime = currTime;

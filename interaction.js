@@ -1,11 +1,12 @@
 var xMovement = 0.0;
 var yMovement = 0.0;
 var zMovement = 0.0;
+var xRotate = 0.0;
 var yRotate = 0.0;
 var zRotate = 0.0;
 
 $(document).on("keydown", function (e) {
-	if (e.which == 188 || e.which == 190 ||e.which == 38 || e.which == 40 || e.which == 87 || e.which == 65 || e.which == 83 || e.which == 68) {
+	if (e.which == 188 || e.which == 190 ||e.which == 38 || e.which == 40 || e.which == 87 || e.which == 65 || e.which == 83 || e.which == 68 || e.which == 222 || e.which == 191) {
 		e.preventDefault();
 	}
 	else
@@ -41,5 +42,13 @@ $(document).on("keydown", function (e) {
 
 	if (e.which == 190) {
 		yRotate -= Math.PI / 50;
+	}
+
+	if (e.which == 222) {
+		xRotate += Math.PI / 30;
+	}
+
+	if (e.which == 191) {
+		xRotate -= Math.PI / 30;
 	}
 });

@@ -3,6 +3,7 @@ var wallTexture;
 var ceilingTexture;
 var lightTexture;
 var witchTexture;
+var catTexture;
 
 function initTextures() {
 	floorTexture = gl.createTexture();
@@ -34,6 +35,12 @@ function initTextures() {
 	witchTexture.image.crossOrigin = "anonymous";
 	witchTexture.image.onload = function() { handleLoadedTexture(witchTexture); }
 	witchTexture.image.src = "images/witch.png";
+
+	catTexture = gl.createTexture();
+	catTexture.image = new Image();
+	catTexture.image.crossOrigin = "anonymous";
+	catTexture.image.onload = function() { handleLoadedTexture(catTexture); }
+	catTexture.image.src = "images/cat.png";
 }
 
 function handleLoadedTexture(texture) {
