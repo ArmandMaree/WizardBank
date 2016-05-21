@@ -4,6 +4,10 @@ var ceilingTexture;
 var lightTexture;
 var witchTexture;
 var catTexture;
+var painting1Texture;
+var painting2Texture;
+var greenTexture;
+var pinkTexture;
 
 function initTextures() {
 	floorTexture = gl.createTexture();
@@ -41,6 +45,30 @@ function initTextures() {
 	catTexture.image.crossOrigin = "anonymous";
 	catTexture.image.onload = function() { handleLoadedTexture(catTexture); }
 	catTexture.image.src = "images/cat.png";
+
+	painting1Texture = gl.createTexture();
+	painting1Texture.image = new Image();
+	painting1Texture.image.crossOrigin = "anonymous";
+	painting1Texture.image.onload = function() { handleLoadedTexture(painting1Texture); }
+	painting1Texture.image.src = "images/painting1.png";
+
+	painting2Texture = gl.createTexture();
+	painting2Texture.image = new Image();
+	painting2Texture.image.crossOrigin = "anonymous";
+	painting2Texture.image.onload = function() { handleLoadedTexture(painting2Texture); }
+	painting2Texture.image.src = "images/painting2.png";
+
+	greenTexture = gl.createTexture();
+	greenTexture.image = new Image();
+	greenTexture.image.crossOrigin = "anonymous";
+	greenTexture.image.onload = function() { handleLoadedTexture(greenTexture); }
+	greenTexture.image.src = "images/green.png";
+
+	pinkTexture = gl.createTexture();
+	pinkTexture.image = new Image();
+	pinkTexture.image.crossOrigin = "anonymous";
+	pinkTexture.image.onload = function() { handleLoadedTexture(pinkTexture); }
+	pinkTexture.image.src = "images/pink.png";
 }
 
 function handleLoadedTexture(texture) {

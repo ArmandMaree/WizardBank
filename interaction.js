@@ -4,9 +4,10 @@ var zMovement = 0.0;
 var xRotate = 0.0;
 var yRotate = 0.0;
 var zRotate = 0.0;
+var useGreen = true;
 
 $(document).on("keydown", function (e) {
-	if (e.which == 188 || e.which == 190 ||e.which == 38 || e.which == 40 || e.which == 87 || e.which == 65 || e.which == 83 || e.which == 68 || e.which == 222 || e.which == 191) {
+	if (e.which == 188 || e.which == 190 ||e.which == 38 || e.which == 40 || e.which == 87 || e.which == 65 || e.which == 83 || e.which == 68 || e.which == 222 || e.which == 191 || e.which == 86 || e.which == 80 || e.which == 67) {
 		e.preventDefault();
 	}
 	else
@@ -50,5 +51,17 @@ $(document).on("keydown", function (e) {
 
 	if (e.which == 191) {
 		xRotate -= Math.PI / 30;
+	}
+
+	if (e.which == 86) {
+		isPerspective = !isPerspective;
+	}
+
+	if (e.which == 80) {
+		usePointSource = !usePointSource;
+	}
+
+	if (e.which == 67) {
+		useGreen = !useGreen;
 	}
 });

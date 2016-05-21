@@ -61,10 +61,9 @@ function initShaders() {
 
 	shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
 	shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+	shaderProgram.usePointUniform = gl.getUniformLocation(shaderProgram, "uUsePoint");
 	shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
-	shaderProgram.pointLighting0LocationUniform = gl.getUniformLocation(shaderProgram, "uPointLighting0Location");
-	shaderProgram.pointLighting0ColorUniform = gl.getUniformLocation(shaderProgram, "uPointLighting0Color");
-	shaderProgram.pointLighting1LocationUniform = gl.getUniformLocation(shaderProgram, "uPointLighting1Location");
-	shaderProgram.pointLighting1ColorUniform = gl.getUniformLocation(shaderProgram, "uPointLighting1Color");
+	shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uPointLightingLocation");
+    shaderProgram.pointLightingColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingColor");
 	shaderProgram.alphaUniform = gl.getUniformLocation(shaderProgram, "uAlpha");
 }

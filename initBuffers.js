@@ -1,9 +1,10 @@
 var wallWidth = 200.0;
 var wallHeight = 50.0;
-var npcWidth = 8.0;
-var npcHeight = 20;
+var npcWidth = 10;
+var npcHeight = 30;
 var catWidth = 12.0;
 var catHeight = 8.0;
+var paintingDim = 20.0;
 
 var floorVertexPositionBuffer;
 var floorVertexNormalBuffer;
@@ -25,6 +26,10 @@ var catVertexPositionBuffer;
 var catVertexNormalBuffer;
 var catVertexTextureCoordBuffer;
 
+var paintingVertexPositionBuffer;
+var paintingVertexNormalBuffer;
+var paintingVertexTextureCoordBuffer;
+
 function initBuffers() {
 	// floor
 	floorVertexPositionBuffer = gl.createBuffer();
@@ -42,10 +47,10 @@ function initBuffers() {
 	floorVertexNormalBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexNormalBuffer);
 	var vertexNormals = [
-		-wallWidth / 2, -wallHeight, -wallWidth / 2,
-		-wallWidth / 2, -wallHeight,  wallWidth / 2,
-		 wallWidth / 2, -wallHeight, -wallWidth / 2,
-		 wallWidth / 2, -wallHeight,  wallWidth / 2
+		0.0, -1.0, 0.0,
+		0.0, -1.0, 0.0,
+		0.0, -1.0, 0.0,
+		0.0, -1.0, 0.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 	floorVertexNormalBuffer.itemSize = 3;
@@ -79,10 +84,10 @@ function initBuffers() {
 	wallVertexNormalBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, wallVertexNormalBuffer);
 	var vertexNormals = [
-		-wallWidth / 2, -wallHeight / 2, -wallWidth,
-		-wallWidth / 2,  wallHeight / 2, -wallWidth,
-		 wallWidth / 2, -wallHeight / 2, -wallWidth,
-		 wallWidth / 2,  wallHeight / 2, -wallWidth
+		0.0, 0.0, -1.0,
+		0.0, 0.0, -1.0,
+		0.0, 0.0, -1.0,
+		0.0, 0.0, -1.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 	wallVertexNormalBuffer.itemSize = 3;
@@ -148,40 +153,40 @@ function initBuffers() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, lightVertexNormalBuffer);
 	var vertexNormals = [
 		// Front face
-		-1.0, -1.0, -1.0,
-		-1.0,  1.0, -1.0,
-		 1.0, -1.0, -1.0,
-		 1.0,  1.0, -1.0,
+		0.0, 0.0, -1.0,
+		0.0, 0.0, -1.0,
+		0.0, 0.0, -1.0,
+		0.0, 0.0, -1.0,
 
 		// Back face
-		-1.0, -1.0, 1.0,
-		-1.0,  1.0, 1.0,
-		 1.0, -1.0, 1.0,
-		 1.0,  1.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
 
 		// Top face
-		-1.0, 1.0, -1.0,
-		-1.0, 1.0,  1.0,
-		 1.0, 1.0, -1.0,
-		 1.0, 1.0,  1.0,
+		0.0, 1.0, 0.0,
+		0.0, 1.0, 0.0,
+		0.0, 1.0, 0.0,
+		0.0, 1.0, 0.0,
 
 		// Bottom face
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0,  1.0,
-		 1.0, -1.0, -1.0,
-		 1.0, -1.0,  1.0,
+		0.0, -1.0, 0.0,
+		0.0, -1.0, 0.0,
+		0.0, -1.0, 0.0,
+		0.0, -1.0, 0.0,
 
 		// Left face
-		-1.0, -1.0, -1.0,
-		-1.0,  1.0, -1.0,
-		-1.0, -1.0,  1.0,
-		-1.0,  1.0,  1.0,
+		-1.0, 0.0, 0.0,
+		-1.0, 0.0, 0.0,
+		-1.0, 0.0, 0.0,
+		-1.0, 0.0, 0.0,
 
 		// Right face
-		1.0, -1.0, -1.0,
-		1.0,  1.0, -1.0,
-		1.0, -1.0,  1.0,
-		1.0,  1.0,  1.0
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 	lightVertexNormalBuffer.itemSize = 3;
@@ -234,10 +239,10 @@ function initBuffers() {
 	npcVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexPositionBuffer);
 	var vertices = [
-		-npcWidth / 2, -10, 0.0,
-		-npcWidth / 2,  10, 0.0,
-		 npcWidth / 2, -10, 0.0,
-		 npcWidth / 2,  10, 0.0
+		-npcWidth / 2, -npcHeight / 2, 0.0,
+		-npcWidth / 2,  npcHeight / 2, 0.0,
+		 npcWidth / 2, -npcHeight / 2, 0.0,
+		 npcWidth / 2,  npcHeight / 2, 0.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	npcVertexPositionBuffer.itemSize = 3;
@@ -246,10 +251,10 @@ function initBuffers() {
 	npcVertexNormalBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, npcVertexNormalBuffer);
 	var vertexNormals = [
-		-npcWidth / 2, -npcHeight / 2, wallWidth,
-		-npcWidth / 2,  npcHeight / 2, wallWidth,
-		 npcWidth / 2, -npcHeight / 2, wallWidth,
-		 npcWidth / 2,  npcHeight / 2, wallWidth
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 	npcVertexNormalBuffer.itemSize = 3;
@@ -283,10 +288,10 @@ function initBuffers() {
 	catVertexNormalBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, catVertexNormalBuffer);
 	var vertexNormals = [
-		-catWidth / 2, -catHeight / 2, wallWidth,
-		-catWidth / 2,  catHeight / 2, wallWidth,
-		 catWidth / 2, -catHeight / 2, wallWidth,
-		 catWidth / 2,  catHeight / 2, wallWidth
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 	catVertexNormalBuffer.itemSize = 3;
@@ -303,6 +308,43 @@ function initBuffers() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	catVertexTextureCoordBuffer.itemSize = 2;
 	catVertexTextureCoordBuffer.numItems = 4;
+
+	// painting
+	paintingVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, paintingVertexPositionBuffer);
+	var vertices = [
+		-paintingDim / 2, -paintingDim / 2, 0.0,
+		-paintingDim / 2,  paintingDim / 2, 0.0,
+		 paintingDim / 2, -paintingDim / 2, 0.0,
+		 paintingDim / 2,  paintingDim / 2, 0.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	paintingVertexPositionBuffer.itemSize = 3;
+	paintingVertexPositionBuffer.numItems = 4;
+
+	paintingVertexNormalBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, paintingVertexNormalBuffer);
+	var vertexNormals = [
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+	paintingVertexNormalBuffer.itemSize = 3;
+	paintingVertexNormalBuffer.numItems = 4;
+
+	paintingVertexTextureCoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, paintingVertexTextureCoordBuffer);
+	var textureCoords = [
+		0.0, 0.0,
+		0.0, 1.0,
+		1.0, 0.0,
+		1.0, 1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+	paintingVertexTextureCoordBuffer.itemSize = 2;
+	paintingVertexTextureCoordBuffer.numItems = 4;
 }
 
 function recalcBuffers() {
